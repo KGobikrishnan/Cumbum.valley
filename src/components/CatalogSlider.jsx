@@ -2,12 +2,18 @@ import React, { useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { ChevronRight, ArrowRight, ShieldCheck, Scale, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ArrowRight, ShieldCheck, Scale, ArrowLeft, Eye } from 'lucide-react';
 
 export default function CatalogSlider() {
-  const { products, setActivePage, setActiveMobileTab, setIsConciergeOpen, setActiveConciergeProduct, triggerHaptic } = useApp();
+  const { 
+    products, 
+    setActivePage, 
+    setActiveMobileTab, 
+    setIsDetailsOpen, 
+    setActiveProduct, 
+    triggerHaptic 
+  } = useApp();
 
-  // Embla setup
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trim',
@@ -24,10 +30,10 @@ export default function CatalogSlider() {
 
   const signatureProducts = products.slice(0, 3);
 
-  const handleProcureClick = (product) => {
-    triggerHaptic(25);
-    setActiveConciergeProduct(product);
-    setIsConciergeOpen(true);
+  const handleInspectClick = (product) => {
+    triggerHaptic(20);
+    setActiveProduct(product);
+    setIsDetailsOpen(true);
   };
 
   const handleViewAllClick = () => {
@@ -36,33 +42,52 @@ export default function CatalogSlider() {
     setActiveMobileTab('catalog');
   };
 
+  const scrollPopupVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.96 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { 
+        duration: 0.9, 
+        ease: [0.16, 1, 0.3, 1] 
+      }
+    }
+  };
+
   return (
     <section className="py-20 md:py-28 relative bg-white border-t border-cream-darker overflow-hidden">
       
-      <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
+      {/* Header Block with scroll-entrance popup */}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10"
+      >
         <div>
           <p className="text-xs uppercase tracking-[0.25em] font-bold mb-3 text-gold">
-            Signature Spotlight
+            Signature Harvest
           </p>
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-green">
-            Premium Catalog Showcase
+          <h2 className="text-3xl md:text-5xl font-serif font-black text-green">
+            Premium Spotlight Showcase
           </h2>
           <div className="w-16 h-[2px] bg-gold mt-4" />
         </div>
         
         <div className="flex items-center gap-4">
-          {/* Custom navigation circles */}
           <div className="flex gap-2">
             <button 
               onClick={scrollPrev}
-              className="w-10 h-10 border border-green/15 flex items-center justify-center hover:bg-cream transition-colors text-green outline-none"
+              className="w-10 h-10 border border-green/15 flex items-center justify-center hover:bg-cream transition-colors text-green outline-none cursor-pointer"
               style={{ borderRadius: '0' }}
             >
               <ArrowLeft size={16} />
             </button>
             <button 
               onClick={scrollNext}
-              className="w-10 h-10 border border-green/15 flex items-center justify-center hover:bg-cream transition-colors text-green outline-none"
+              className="w-10 h-10 border border-green/15 flex items-center justify-center hover:bg-cream transition-colors text-green outline-none cursor-pointer"
               style={{ borderRadius: '0' }}
             >
               <ArrowRight size={16} />
@@ -77,17 +102,24 @@ export default function CatalogSlider() {
             <span>View Full Catalog</span>
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Embla Slider Container */}
-      <div className="w-full overflow-hidden px-6 md:px-12 relative z-10" ref={emblaRef}>
+      {/* Embla Carousel scroll-revealed popup */}
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={scrollPopupVariants}
+        className="w-full overflow-hidden px-6 md:px-12 relative z-10 animate-fade-in-up"
+        ref={emblaRef}
+      >
         <div className="flex gap-6 select-none">
           {signatureProducts.map((p) => (
             <motion.div
               key={p.id}
               whileHover={{ 
                 scale: 1.03, 
-                y: -8,
+                y: -6,
                 borderColor: '#C9A84C'
               }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -102,7 +134,7 @@ export default function CatalogSlider() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-green to-transparent opacity-60" />
                 
-                {/* Metric label fades in on hover */}
+                {/* Spec metrics floating label on hover */}
                 <motion.div 
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
@@ -121,8 +153,11 @@ export default function CatalogSlider() {
               {/* Spec Panel */}
               <div className="p-6 md:p-8 flex flex-col justify-between flex-1 relative z-10 bg-cream">
                 <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg md:text-xl font-serif font-bold text-green leading-tight">
+                  <div className="flex justify-between items-start gap-2 mb-1">
+                    <h3 
+                      onClick={() => handleInspectClick(p)}
+                      className="text-lg md:text-xl font-serif font-black text-green leading-tight hover:text-gold transition-colors cursor-pointer"
+                    >
                       {p.name}
                     </h3>
                   </div>
@@ -135,20 +170,20 @@ export default function CatalogSlider() {
                     {p.description}
                   </p>
 
-                  {/* technical specifications */}
+                  {/* parameters metrics details */}
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     <div className="flex items-center gap-2">
                       <Scale size={12} className="text-gold" />
                       <div className="text-[9px]">
-                        <span className="text-green/45 block font-bold uppercase leading-none font-sans mb-1">Min Order MOQ</span>
-                        <span className="font-extrabold text-green font-sans">{p.moq}</span>
+                        <span className="text-green/45 block font-bold uppercase leading-none font-sans mb-1">Packing weight</span>
+                        <span className="font-extrabold text-green font-sans">{p.moq} pack</span>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-2">
                       <ShieldCheck size={12} className="text-gold" />
                       <div className="text-[9px]">
-                        <span className="text-green/45 block font-bold uppercase leading-none font-sans mb-1">Purity Index</span>
+                        <span className="text-green/45 block font-bold uppercase leading-none font-sans mb-1">Purity Level</span>
                         <span className="font-extrabold text-green font-sans">{p.purity.split(' ')[0]}</span>
                       </div>
                     </div>
@@ -156,19 +191,19 @@ export default function CatalogSlider() {
                 </div>
 
                 <button
-                  onClick={() => handleProcureClick(p)}
-                  className="w-full btn-gold py-3 text-center flex items-center justify-center gap-2 text-[10px] tracking-[0.25em]"
+                  onClick={() => handleInspectClick(p)}
+                  className="w-full btn-gold py-3.5 text-center flex items-center justify-center gap-2 text-[10px] tracking-[0.25em]"
                   style={{ borderRadius: '0' }}
                 >
-                  <span>Initiate Sourcing</span>
-                  <ChevronRight size={14} />
+                  <Eye size={12} />
+                  <span>Inspect Sourced</span>
                 </button>
               </div>
 
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
       
     </section>
   );

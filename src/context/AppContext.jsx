@@ -238,6 +238,7 @@ export const AppProvider = ({ children }) => {
     const tabMap = {
       'home': 'landing',
       'catalog': 'shop',
+      'story': 'story',
       'portal': 'portal',
       'admin': 'admin'
     };

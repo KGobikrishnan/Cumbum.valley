@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
 import MobileBottomNav from './components/MobileBottomNav';
+import MobileTopNav from './components/MobileTopNav';
 import Hero from './components/Hero';
 import Storyline from './components/Storyline';
 import CatalogSlider from './components/CatalogSlider';
@@ -11,9 +12,36 @@ import CartDrawer from './components/CartDrawer';
 import ProductDetailsModal from './components/ProductDetailsModal';
 import StatusPortal from './components/StatusPortal';
 import AdminDashboard from './components/AdminDashboard';
+import HeritageStoryPage from './components/HeritageStoryPage';
+import Lenis from '@studio-freight/lenis';
 
 function AppContent() {
   const { activePage, triggerHaptic } = useApp();
+
+  // Initialize Lenis buttery smooth 60fps scroll
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1.15,
+      touchMultiplier: 2.0,
+      infinite: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   // Scroll to top when active page changes on desktop
   useEffect(() => {
@@ -41,6 +69,8 @@ function AppContent() {
         );
       case 'shop':
         return <EliteCatalog />;
+      case 'story':
+        return <HeritageStoryPage />;
       case 'checkout':
         return <CheckoutPage />;
       case 'portal':
@@ -70,11 +100,14 @@ function AppContent() {
         }}
       />
 
+      {/* Sticky blurred mobile-only top header */}
+      <MobileTopNav />
+
       {/* Luxury Sticky Desktop Navbar Header */}
       <Navbar />
 
-      {/* Fluid Page Content Zone */}
-      <main className="flex-1 z-10 pt-0 md:pt-[76px]">
+      {/* Fluid Page Content Zone with mobile top padding safe zone (pt-14 matches h-14 header) */}
+      <main className="flex-1 z-10 pt-14 md:pt-[76px]">
         {renderActiveScreen()}
       </main>
 
@@ -84,7 +117,7 @@ function AppContent() {
       {/* Global Product Details Sheet Overlay */}
       <ProductDetailsModal />
 
-      {/* Responsive Touch-Optimized Native Mobile Bottom Tab Bar */}
+      {/* Responsive Touch-Optimized Native Mobile Bottom Dock Tab Bar */}
       <MobileBottomNav />
 
       {/* Elegant minimalist footer for desktop screens only */}

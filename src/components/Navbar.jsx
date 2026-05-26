@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { Sprout, BarChart3, ClipboardList, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { Sprout, BarChart3, Leaf, ClipboardList, ShieldCheck, ShoppingBag } from 'lucide-react';
 
 export default function Navbar() {
   const { activePage, setActivePage, cart, setIsCartOpen, triggerHaptic } = useApp();
@@ -9,6 +9,7 @@ export default function Navbar() {
   const navItems = [
     { id: 'landing', label: 'Heritage Home', icon: Sprout },
     { id: 'shop', label: 'Elite Boutique', icon: BarChart3 },
+    { id: 'story', label: 'Farm Heritage', icon: Leaf },
     { id: 'portal', label: 'Order Tracker', icon: ClipboardList },
     { id: 'admin', label: 'Admin Desk', icon: ShieldCheck }
   ];
