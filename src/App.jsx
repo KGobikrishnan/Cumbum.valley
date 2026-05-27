@@ -13,6 +13,7 @@ import ProductDetailsModal from './components/ProductDetailsModal';
 import StatusPortal from './components/StatusPortal';
 import AdminDashboard from './components/AdminDashboard';
 import HeritageStoryPage from './components/HeritageStoryPage';
+import MobileCategoryDrawer from './components/MobileCategoryDrawer';
 import Lenis from '@studio-freight/lenis';
 
 function AppContent() {
@@ -110,6 +111,9 @@ function AppContent() {
       <main className="flex-1 z-10 pt-14 md:pt-[76px]">
         {renderActiveScreen()}
       </main>
+
+      {/* Global Mobile Category Drawer */}
+      <MobileCategoryDrawer />
 
       {/* Global Slide-Over Shopping Cart Sidebar Drawer */}
       <CartDrawer />

@@ -7,11 +7,11 @@ export default function Navbar() {
   const { activePage, setActivePage, cart, setIsCartOpen, triggerHaptic } = useApp();
 
   const navItems = [
-    { id: 'landing', label: 'Heritage Home', icon: Sprout },
-    { id: 'shop', label: 'Elite Boutique', icon: BarChart3 },
-    { id: 'story', label: 'Farm Heritage', icon: Leaf },
-    { id: 'portal', label: 'Order Tracker', icon: ClipboardList },
-    { id: 'admin', label: 'Admin Desk', icon: ShieldCheck }
+    { id: 'landing', label: 'Home', icon: Sprout },
+    { id: 'shop', label: 'Shop All', icon: BarChart3 },
+    { id: 'story', label: 'Our Story', icon: Leaf },
+    { id: 'portal', label: 'Track Order', icon: ClipboardList },
+    { id: 'admin', label: 'Admin', icon: ShieldCheck }
   ];
 
   const handleNavClick = (id) => {
@@ -37,7 +37,7 @@ export default function Navbar() {
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-widest text-green font-serif leading-none">CUMBUM VALLEY</h1>
-            <p className="text-[9px] uppercase tracking-[0.25em] text-gold font-bold mt-1">Heritage Organic Boutique</p>
+            <p className="text-[9px] uppercase tracking-[0.25em] text-gold font-bold mt-1">Organic Millet Store</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export default function Navbar() {
           {/* Global Security SLA Badge */}
           <div className="flex items-center gap-2 px-4 py-2 bg-gold-light border border-gold/30 rounded-full text-[9px] font-bold uppercase tracking-wider text-green">
             <div className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
-            <span>24H SLA Delivery</span>
+            <span>Phytosanitary Certified</span>
           </div>
 
         </div>

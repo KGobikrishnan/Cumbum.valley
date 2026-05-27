@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Sparkles, ArrowDown } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 export default function Hero() {
+  const { cart, setActivePage, triggerHaptic } = useApp();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const { scrollY } = useScroll();
 
@@ -46,18 +48,18 @@ export default function Hero() {
   };
 
   const titleWords = ["CUMBUM", "VALLEY"];
-  const subtitleWords = "An ultra-premium B2B digital ecosystem optimized for the wholesale distribution of organic, heritage millets.".split(" ");
+  const subtitleWords = "India's premier bulk B2B exporter of certified organic unpolished heritage millets, supplying globally at commercial scale.".split(" ");
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-green">
       
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat scale-[1.05]"
-        style={{ 
+      {/* Premium Background Image */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat scale-[1.03] opacity-55"
+        style={{
           backgroundImage: `url('/cumbum_valley_hero.png')`,
-          filter: 'brightness(0.95)'
-        }} 
+          filter: 'brightness(0.65) contrast(1.1) saturate(1.05)'
+        }}
       />
 
       {/* Dark Luxury Overlay */}
@@ -97,7 +99,7 @@ export default function Hero() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.25em] mb-8 bg-gold-light bg-opacity-10 border border-gold border-opacity-35 text-gold font-sans"
         >
           <Sparkles size={11} className="animate-pulse text-gold" />
-          <span>Heritage Sourcing • USDA Certified</span>
+          <span>Bulk Export Sourcing • Global Certification</span>
         </motion.div>
 
         {/* Display Header Serif with stagger words */}
@@ -152,18 +154,25 @@ export default function Hero() {
         >
           <button 
             onClick={() => {
-              if (window.navigator.vibrate) window.navigator.vibrate(20);
-              document.getElementById('heritage-storyline')?.scrollIntoView({ behavior: 'smooth' });
+              triggerHaptic(22);
+              if (cart.length > 0) {
+                setActivePage('checkout');
+              } else {
+                setActivePage('shop');
+                setTimeout(() => {
+                  document.getElementById('boutique-catalog')?.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+              }
             }}
             className="btn-gold font-sans text-xs tracking-[0.2em] font-bold px-8 py-4 bg-gold text-green border-none uppercase cursor-pointer hover:bg-gold-hover transition-all duration-300 shadow-gold"
             style={{ borderRadius: '0' }}
           >
-            Initiate Sourcing
+            Initiate Bulk Order
           </button>
           
           <div className="flex items-center gap-3 text-cream opacity-65 text-[10px] uppercase tracking-[0.2em] font-semibold font-sans">
             <span className="w-8 h-[1px] bg-cream opacity-30" />
-            <span>24H Response SLA Guaranteed</span>
+            <span>Container Load Shipments Worldwide</span>
             <span className="w-8 h-[1px] bg-cream opacity-30" />
           </div>
         </motion.div>
@@ -181,7 +190,7 @@ export default function Hero() {
           }}
         >
           <span className="text-[9px] uppercase tracking-[0.2em] text-gold font-bold font-sans">
-            Heritage Narrative
+            Scroll to Explore
           </span>
           <motion.div 
             animate={{ y: [0, 12, 0] }}

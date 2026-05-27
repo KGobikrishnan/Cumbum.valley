@@ -4,13 +4,13 @@ import { useApp } from '../context/AppContext';
 import { Sprout, BarChart3, Leaf, ClipboardList, ShieldCheck, ShoppingBag } from 'lucide-react';
 
 export default function MobileBottomNav() {
-  const { activeMobileTab, setActiveMobileTab, cart, setIsCartOpen, triggerHaptic } = useApp();
+  const { activeMobileTab, setActiveMobileTab, cart, setIsCartOpen, triggerHaptic, activePage } = useApp();
 
   const tabs = [
-    { id: 'home', label: 'Heritage', icon: Sprout },
-    { id: 'catalog', label: 'Boutique', icon: BarChart3 },
-    { id: 'story', label: 'Farms', icon: Leaf },
-    { id: 'portal', label: 'Tracker', icon: ClipboardList },
+    { id: 'home', label: 'Home', icon: Sprout },
+    { id: 'catalog', label: 'Shop', icon: BarChart3 },
+    { id: 'story', label: 'Story', icon: Leaf },
+    { id: 'portal', label: 'Orders', icon: ClipboardList },
     { id: 'admin', label: 'Admin', icon: ShieldCheck }
   ];
 
@@ -20,6 +20,8 @@ export default function MobileBottomNav() {
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (activePage === 'checkout') return null;
 
   return (
     <>

@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                     const sla = getSLAParameters(ord.createdAt);
                     const isCriticalActive = ord.status !== 'Delivered' && sla.isCritical;
                     const isRed = ord.status !== 'Delivered' && sla.isUnderSix;
-                    const itemSummary = ord.items.map(i => `${i.product.tamilName} (${i.size}kg × ${i.quantity})`).join(', ');
+                    const itemSummary = ord.items.map(i => `${i.product.tamilName} (${i.size}kg × ${Number(i.quantity.toFixed(1))})`).join(', ');
 
                     return (
                       <motion.tr 
@@ -475,9 +475,9 @@ export default function AdminDashboard() {
                           <span className="text-[9px] text-green/40 font-medium italic">{item.product.tamilName} • {item.product.scientificName}</span>
                         </td>
                         <td className="py-3 font-bold text-green">{item.product.form}</td>
-                        <td className="py-3 text-right font-bold">{item.size < 1 ? `${item.size * 1000}g` : `${item.size} kg`}</td>
-                        <td className="py-3 text-right font-bold">{item.quantity}</td>
-                        <td className="py-3 text-right font-extrabold text-green">₹{(item.price * item.quantity).toLocaleString()}</td>
+                        <td className="py-3 text-right font-bold">{item.size} kg</td>
+                        <td className="py-3 text-right font-bold">{Number(item.quantity.toFixed(1))}</td>
+                        <td className="py-3 text-right font-extrabold text-green">₹{Math.round(item.price * item.quantity).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>

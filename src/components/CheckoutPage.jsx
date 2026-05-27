@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,6 +23,23 @@ export default function CheckoutPage() {
   const { cart, submitCheckout, setActivePage, triggerHaptic } = useApp();
   const [step, setStep] = useState(1);
   const [isFlipped, setIsFlipped] = useState(false); // Credit card flip for CVV focus!
+  const [submittedOrder, setSubmittedOrder] = useState(null);
+  const [slaCountdown, setSlaCountdown] = useState(86400); // 24 hours in seconds
+
+  useEffect(() => {
+    if (!submittedOrder) return;
+    const timer = setInterval(() => {
+      setSlaCountdown((c) => Math.max(0, c - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [submittedOrder]);
+
+  const formatCountdown = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h}h ${m}m ${s}s`;
+  };
 
   const { register, handleSubmit, formState: { errors }, trigger, watch } = useForm({
     resolver: zodResolver(checkoutSchema),
@@ -70,7 +87,7 @@ export default function CheckoutPage() {
 
   const onFormSubmit = (data) => {
     const order = submitCheckout(data);
-    setActivePage('portal'); // Directly switch to Order Tracker!
+    setSubmittedOrder(order);
   };
 
   // Helper to format card number with spaces for luxury preview
@@ -530,13 +547,13 @@ export default function CheckoutPage() {
                       {item.product.name}
                     </h4>
                     <span className="text-[8px] uppercase tracking-wider text-gold font-bold font-sans block">
-                      {item.quantity} × {item.size < 1 ? `${item.size * 1000}g` : `${item.size} kg`} pack
+                      {Number(item.quantity.toFixed(1))} × {item.size} kg pack ({item.quantity * item.size} kg total)
                     </span>
                   </div>
                 </div>
 
                 <span className="text-xs font-bold text-green font-sans whitespace-nowrap">
-                  ₹{(item.price * item.quantity).toLocaleString()}
+                  ₹{Math.round(item.price * item.quantity).toLocaleString()}
                 </span>
               </div>
             ))}
@@ -579,6 +596,96 @@ export default function CheckoutPage() {
         </div>
 
       </div>
+
+      {/* 24-HOUR B2B SLA RESPONSE SECURED MODAL */}
+      <AnimatePresence>
+        {submittedOrder && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+            {/* Soft dark green glassmorphic backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.8 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-green/90 backdrop-blur-md"
+            />
+            
+            {/* iOS squircle floating modal */}
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 30 }}
+              transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              className="relative z-10 w-full max-w-lg bg-cream border border-gold/45 p-8 md:p-12 text-center text-green rounded-[28px] max-h-[92vh] overflow-y-auto"
+              style={{
+                boxShadow: '0 30px 80px rgba(8, 44, 27, 0.45)'
+              }}
+            >
+              {/* Organic watermark */}
+              <div className="absolute right-4 bottom-4 font-serif text-[7vw] font-black uppercase text-green opacity-[0.02] select-none pointer-events-none">
+                SLA CLEARED
+              </div>
+
+              {/* Verified Badge */}
+              <div className="w-14 h-14 rounded-full bg-gold/10 text-gold flex items-center justify-center mx-auto mb-6 border border-gold/30">
+                <ShieldCheck size={28} className="text-gold animate-pulse" />
+              </div>
+
+              <span className="text-[9px] uppercase tracking-[0.25em] font-extrabold text-gold font-sans block mb-2">
+                24-Hour B2B SLA Response Secured
+              </span>
+              
+              <h2 className="text-xl md:text-2xl font-serif font-black text-green leading-tight mb-4">
+                Sourcing Consignment Registered
+              </h2>
+
+              <p className="text-xs text-green/75 font-sans leading-relaxed max-w-sm mx-auto mb-8">
+                Your bulk millet procurement contract has been successfully initialized into our domestic and international logistics pipeline. Designated clearing executives are reviewing phytosanitary specifications.
+              </p>
+
+              {/* SLA Ticking Clock */}
+              <div className="bg-white border border-gold/25 p-5 rounded-2xl mb-6 flex flex-col items-center shadow-inner">
+                <span className="text-[8px] uppercase tracking-widest text-green/45 font-black block mb-2 font-sans">
+                  SLA Response Guarantee Countdown
+                </span>
+                <span className="text-xl md:text-2xl font-mono font-black text-green tracking-widest leading-none">
+                  {formatCountdown(slaCountdown)}
+                </span>
+                <span className="text-[8px] text-gold font-bold uppercase tracking-wider mt-2 font-sans">
+                  Contract SLA: {submittedOrder.id}
+                </span>
+              </div>
+
+              {/* Executive Grid */}
+              <div className="grid grid-cols-2 gap-4 text-left bg-white/60 border border-green/5 p-4 rounded-xl mb-8 text-[11px] font-sans">
+                <div>
+                  <span className="text-[7.5px] uppercase tracking-wider text-green/45 font-bold block mb-0.5">Designated Executive</span>
+                  <strong className="text-green">{submittedOrder.accountExecutive}</strong>
+                  <span className="text-[9px] text-green/55 block">Procurement Specialist</span>
+                </div>
+                <div>
+                  <span className="text-[7.5px] uppercase tracking-wider text-green/45 font-bold block mb-0.5">Logistics Port Sizing</span>
+                  <strong className="text-green truncate block max-w-[150px]">{submittedOrder.shippingDetails.address}</strong>
+                  <span className="text-[9px] text-green/55 block">Pin Code: {submittedOrder.shippingDetails.pincode}</span>
+                </div>
+              </div>
+
+              {/* CTA button */}
+              <button
+                onClick={() => {
+                  triggerHaptic(20);
+                  setActivePage('portal');
+                }}
+                className="w-full btn-gold py-4 flex items-center justify-center gap-2.5 text-xs tracking-[0.2em] font-black uppercase text-cream bg-gold border-none cursor-pointer hover:bg-gold-hover transition-all duration-300 shadow-gold"
+                style={{ borderRadius: '9999px' }}
+              >
+                <span>Access Live Logistics Hub</span>
+                <ChevronRight size={12} className="text-cream" />
+              </button>
+
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

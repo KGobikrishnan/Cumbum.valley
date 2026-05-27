@@ -276,11 +276,11 @@ export default function StatusPortal() {
                             {item.product.name}
                           </span>
                           <span className="text-[8px] uppercase tracking-wider text-gold font-bold font-sans">
-                            {item.quantity} × {item.size < 1 ? `${item.size * 1000}g` : `${item.size} kg`} pack weight
+                            {Number(item.quantity.toFixed(1))} × {item.size} kg pack ({item.quantity * item.size} kg total weight)
                           </span>
                         </div>
                         <span className="font-bold text-green font-sans">
-                          ₹{(item.price * item.quantity).toLocaleString()}
+                          ₹{Math.round(item.price * item.quantity).toLocaleString()}
                         </span>
                       </div>
                     ))}

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Menu } from 'lucide-react';
 
 export default function MobileTopNav() {
-  const { cart, setIsCartOpen, triggerHaptic, setActivePage } = useApp();
+  const { cart, setIsCartOpen, triggerHaptic, setActivePage, setIsCategoryDrawerOpen } = useApp();
 
   const handleLogoClick = () => {
     triggerHaptic(10);
@@ -20,14 +20,25 @@ export default function MobileTopNav() {
   return (
     <header className="fixed top-0 left-0 right-0 h-14 z-50 md:hidden bg-cream/90 backdrop-blur-md border-b border-gold/20 flex items-center justify-between px-5 select-none print:hidden">
       
-      {/* Brand Identity */}
-      <div onClick={handleLogoClick} className="flex items-center gap-2.5 cursor-pointer">
-        <div className="w-8 h-8 rounded-full bg-green border border-gold flex items-center justify-center shadow-gold">
-          <span className="font-serif text-white font-bold text-sm">CV</span>
-        </div>
-        <div>
-          <h1 className="text-sm font-bold tracking-widest text-green font-serif leading-none">CUMBUM VALLEY</h1>
-          <p className="text-[7.5px] uppercase tracking-[0.2em] text-gold font-extrabold mt-0.5">Heritage Organics</p>
+      <div className="flex items-center gap-3">
+        {/* Hamburger Menu Button */}
+        <button
+          onClick={() => { triggerHaptic(12); setIsCategoryDrawerOpen(true); }}
+          className="w-8 h-8 rounded-full bg-white border border-gold/20 flex items-center justify-center text-green cursor-pointer shadow-gold"
+          title="Open Categories Menu"
+        >
+          <Menu size={14} className="text-gold" />
+        </button>
+
+        {/* Brand Identity */}
+        <div onClick={handleLogoClick} className="flex items-center gap-2 cursor-pointer">
+          <div className="w-7 h-7 rounded-full bg-green border border-gold flex items-center justify-center shadow-gold">
+            <span className="font-serif text-white font-bold text-xs">CV</span>
+          </div>
+          <div>
+            <h1 className="text-[11px] font-black tracking-wider text-green font-serif leading-none">CUMBUM VALLEY</h1>
+            <p className="text-[6.5px] uppercase tracking-[0.18em] text-gold font-extrabold mt-0.5">Heritage Organics</p>
+          </div>
         </div>
       </div>
 

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useApp } from '../context/AppContext';
-import { X, Star, ShoppingBag, Leaf, Shield, Award, Plus, Minus } from 'lucide-react';
+import { useApp, calculateTieredPricePerKg } from '../context/AppContext';
+import { X, Star, ShoppingBag, Leaf, Shield, Award, Plus, Minus, Check } from 'lucide-react';
 
 export default function ProductDetailsModal() {
   const { isDetailsOpen, setIsDetailsOpen, activeProduct, addToCart, triggerHaptic } = useApp();
-  const [selectedSize, setSelectedSize] = useState(1); // Default to 1kg
+  const [selectedSize, setSelectedSize] = useState(100); // Default to 100kg B2B Bag
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Reset local state when active product changes
   useEffect(() => {
@@ -41,11 +42,26 @@ export default function ProductDetailsModal() {
   };
 
   const handleAddToBag = () => {
+    triggerHaptic(25);
+    setIsAdding(true);
     addToCart(activeProduct, quantity, selectedSize);
-    setIsDetailsOpen(false);
+    setTimeout(() => {
+      setIsAdding(false);
+      setIsDetailsOpen(false);
+    }, 1200);
   };
 
-  const unitPrice = Math.round(activeProduct.pricePerKg * selectedSize);
+  const getBulkSizeLabel = (size) => {
+    if (size === 50) return '50 kg Bag';
+    if (size === 100) return '100 kg Bag';
+    if (size === 500) return '500 kg Jumbo';
+    if (size === 1000) return '1 MT Pallet';
+    return `${size} kg`;
+  };
+
+  const totalWeight = selectedSize * quantity;
+  const ratePerKg = calculateTieredPricePerKg(activeProduct.pricePerKg, totalWeight);
+  const unitPrice = ratePerKg * selectedSize;
   const totalPrice = unitPrice * quantity;
 
   return (
@@ -57,7 +73,7 @@ export default function ProductDetailsModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-green/75 backdrop-blur-md"
+            className="fixed inset-0 z-[100] bg-green/75 backdrop-blur-md"
             onClick={handleClose}
           />
 
@@ -67,7 +83,7 @@ export default function ProductDetailsModal() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className="fixed bottom-0 left-0 right-0 max-h-[92vh] md:max-h-[85vh] z-50 bg-cream border-t border-gold/30 rounded-t-[24px] overflow-hidden flex flex-col md:max-w-4xl md:mx-auto md:bottom-1/2 md:translate-y-1/2 md:rounded-[24px] md:border"
+            className="fixed bottom-0 left-0 right-0 max-h-[92vh] md:max-h-[85vh] z-[100] bg-cream border-t border-gold/30 rounded-t-[24px] overflow-hidden flex flex-col md:max-w-4xl md:mx-auto md:bottom-1/2 md:translate-y-1/2 md:rounded-[24px] md:border"
             style={{
               boxShadow: '0 -20px 40px rgba(8, 44, 27, 0.12)'
             }}
@@ -147,19 +163,36 @@ export default function ProductDetailsModal() {
                 </div>
 
                 {/* Core parameters certifications badges */}
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  <div className="flex flex-col items-center p-3 text-center border border-gold/15 bg-white">
-                    <Shield size={16} className="text-gold mb-1" />
-                    <span className="text-[7.5px] uppercase tracking-wider font-extrabold text-green/80 font-sans">Sortex 99.9%</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 text-center border border-gold/15 bg-white">
-                    <Leaf size={16} className="text-gold mb-1" />
-                    <span className="text-[7.5px] uppercase tracking-wider font-extrabold text-green/80 font-sans">Pure Organic</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 text-center border border-gold/15 bg-white">
-                    <Award size={16} className="text-gold mb-1" />
-                    <span className="text-[7.5px] uppercase tracking-wider font-extrabold text-green/80 font-sans">Origin Certified</span>
-                  </div>
+                
+                {/* B2B Minimalist Technical Specifications Table */}
+                <div className="mt-3">
+                  <h4 className="text-[10px] uppercase tracking-wider font-extrabold text-green/50 mb-3 font-sans">
+                    Technical Specifications
+                  </h4>
+                  <table className="w-full text-left text-[11px] font-sans border-collapse bg-white border border-green/5 rounded-2xl overflow-hidden shadow-sm">
+                    <tbody className="divide-y divide-green/5">
+                      <tr className="hover:bg-cream-darker/20 transition-colors">
+                        <td className="p-3 font-semibold text-green/60">Botanical Spec:</td>
+                        <td className="p-3 font-bold text-green italic text-right">{activeProduct.scientificName}</td>
+                      </tr>
+                      <tr className="hover:bg-cream-darker/20 transition-colors">
+                        <td className="p-3 font-semibold text-green/60">Optical Purity:</td>
+                        <td className="p-3 font-bold text-green text-right">{activeProduct.purity}</td>
+                      </tr>
+                      <tr className="hover:bg-cream-darker/20 transition-colors">
+                        <td className="p-3 font-semibold text-green/60">Moisture Limit:</td>
+                        <td className="p-3 font-bold text-green text-right">{activeProduct.moisture}</td>
+                      </tr>
+                      <tr className="hover:bg-cream-darker/20 transition-colors">
+                        <td className="p-3 font-semibold text-green/60">Region of Origin:</td>
+                        <td className="p-3 font-bold text-green text-right">{activeProduct.origin}</td>
+                      </tr>
+                      <tr className="hover:bg-cream-darker/20 transition-colors">
+                        <td className="p-3 font-semibold text-green/60">Escrow License:</td>
+                        <td className="p-3 font-bold text-gold uppercase text-right">{activeProduct.certification}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
 
               </div>
@@ -184,22 +217,22 @@ export default function ProductDetailsModal() {
                 <div>
                   <div className="flex justify-between items-center mb-3">
                     <label className="text-[10px] uppercase tracking-wider font-extrabold text-green/50 font-sans">
-                      Select Package Weight
+                      Select Bulk Sourcing Volume
                     </label>
                     <span className="text-[9px] text-gold font-extrabold uppercase font-sans">
-                      ₹{activeProduct.pricePerKg}/kg Base
+                      ₹{(activeProduct.pricePerKg * 1000).toLocaleString()}/MT Base (₹{activeProduct.pricePerKg}/kg)
                     </span>
                   </div>
                   
                   <div className="grid grid-cols-4 gap-2">
                     {activeProduct.availableSizes.map((size) => {
                       const isSelected = selectedSize === size;
-                      const label = size < 1 ? `${size * 1000}g` : `${size} kg`;
+                      const label = getBulkSizeLabel(size);
                       return (
                         <button
                           key={size}
                           onClick={() => handleSizeSelect(size)}
-                          className={`py-3 text-center text-xs font-bold font-sans border transition-all duration-300 cursor-pointer ${
+                          className={`py-3 text-[10px] uppercase tracking-wider font-black font-sans border transition-all duration-300 cursor-pointer ${
                             isSelected 
                               ? 'bg-gold border-gold text-white shadow-md' 
                               : 'bg-white border-green/10 text-green hover:bg-gold-light/20'
@@ -254,11 +287,27 @@ export default function ProductDetailsModal() {
                 {/* Checkout Add to bag action */}
                 <button
                   onClick={handleAddToBag}
-                  className="w-full btn-gold py-4 flex items-center justify-center gap-3 text-xs tracking-[0.2em] font-black uppercase text-white bg-gold border-none cursor-pointer hover:bg-gold-hover transition-all duration-300 shadow-gold"
+                  disabled={isAdding}
+                  className={`w-full py-4 flex items-center justify-center gap-3 text-xs tracking-[0.2em] font-black uppercase text-white border-none cursor-pointer transition-all duration-300 shadow-gold ${
+                    isAdding ? 'bg-green' : 'bg-gold hover:bg-gold-hover'
+                  }`}
                   style={{ borderRadius: '0' }}
                 >
-                  <ShoppingBag size={14} />
-                  <span>Secure Add to Bag</span>
+                  {isAdding ? (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Check size={14} className="text-white animate-bounce" />
+                      <span>Added to Bag!</span>
+                    </motion.div>
+                  ) : (
+                    <>
+                      <ShoppingBag size={14} />
+                      <span>Secure Add to Bag</span>
+                    </>
+                  )}
                 </button>
 
               </div>

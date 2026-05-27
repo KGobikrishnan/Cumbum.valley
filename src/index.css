@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,17 +24,17 @@
   --c-alert-red-light: #fdf2f2;
   --c-success-gold: #ab8533;
 
-  /* Typography */
-  --font-serif: 'Cinzel', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  /* Typography - Soft Luxury Cormorant & iOS Rounded Outfit */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* Elevation & Shadows */
-  --shadow-premium: 0 20px 40px rgba(8, 44, 27, 0.05);
-  --shadow-premium-lg: 0 30px 60px rgba(8, 44, 27, 0.08);
-  --shadow-gold: 0 4px 20px rgba(195, 156, 78, 0.15);
+  /* Elevation & Shadows - Soft iOS Shadows */
+  --shadow-premium: 0 12px 36px rgba(8, 44, 27, 0.03), 0 1px 3px rgba(8, 44, 27, 0.01);
+  --shadow-premium-lg: 0 30px 60px rgba(8, 44, 27, 0.06), 0 1px 4px rgba(8, 44, 27, 0.02);
+  --shadow-gold: 0 4px 20px rgba(195, 156, 78, 0.1);
 
   /* Transitions */
-  --t-velvety: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  --t-velvety: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   --t-snappy: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -2829,4 +2829,157 @@ h6 {
   text-align: center;
   font-size: 11px;
   font-weight: 700;
+}
+
+/* ==========================================================================
+   BESPOKE IOS LUXURY DESIGN SYSTEM - EXCLUSIVE OVERRIDES
+   ========================================================================== */
+
+/* 1. Global Tactile Soft squircle Corner Overrides */
+.grid > div, 
+.grid-cols-2 > div, 
+.grid-cols-3 > div, 
+.group, 
+.pillar-card,
+.bg-white.border.border-green\/5,
+.bg-white.border.border-green\/10,
+.bg-cream-darker\/40.border-green\/10 {
+  border-radius: 24px !important;
+  border: 1px solid rgba(195, 156, 78, 0.14) !important;
+  box-shadow: 0 10px 30px rgba(8, 44, 27, 0.025), 0 1px 3px rgba(8, 44, 27, 0.01) !important;
+  overflow: hidden !important;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Tactile floating hover physics */
+.grid > div:hover, 
+.grid-cols-2 > div:hover, 
+.grid-cols-3 > div:hover, 
+.group:hover, 
+.pillar-card:hover {
+  transform: translateY(-6px) scale(1.005) !important;
+  box-shadow: 0 30px 60px rgba(8, 44, 27, 0.08), 0 2px 8px rgba(195, 156, 78, 0.08) !important;
+  border-color: rgba(195, 156, 78, 0.38) !important;
+}
+
+/* 2. Premium iOS Pill-Shaped Buttons */
+button, 
+.btn-gold, 
+.btn-outline-green, 
+.btn-outline,
+.category-pill,
+.desktop-nav button {
+  border-radius: 9999px !important; /* Perfect organic circular B2B pills! */
+  font-family: var(--font-sans) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button:hover, 
+.btn-gold:hover, 
+.btn-outline-green:hover {
+  transform: translateY(-2.5px) !important;
+  box-shadow: 0 10px 25px rgba(195, 156, 78, 0.22) !important;
+}
+
+/* 3. Soft iOS-style Form Fields */
+input, 
+select, 
+textarea {
+  border-radius: 14px !important; /* Organic squircle shapes */
+  border: 1px solid rgba(8, 44, 27, 0.12) !important;
+  background-color: rgba(243, 240, 229, 0.4) !important;
+  padding: 0.85rem 1.15rem !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  color: var(--c-dark-green) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+input:focus, 
+select:focus, 
+textarea:focus {
+  border-color: var(--c-gold) !important;
+  background-color: var(--c-white) !important;
+  box-shadow: 0 0 0 4.5px rgba(195, 156, 78, 0.12) !important;
+}
+
+/* 4. Luxury Floating Glass sheets on Mobile Viewports */
+@media (max-width: 768px) {
+  .fixed.top-0.right-0.h-full.w-full,
+  .fixed.top-0.left-0.h-full {
+    border-radius: 28px !important;
+    margin: 12px !important;
+    height: calc(100% - 24px) !important;
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    box-shadow: 0 35px 80px rgba(8, 44, 27, 0.35) !important;
+    border: 1px solid rgba(195, 156, 78, 0.22) !important;
+    backdrop-filter: blur(25px) !important;
+    background: rgba(251, 249, 244, 0.96) !important;
+    overflow: hidden !important;
+  }
+  
+  /* Prevent full-bleed backdrop bleed-through */
+  .fixed.inset-0.z-\[100\] {
+    backdrop-filter: blur(8px) !important;
+    background: rgba(8, 44, 27, 0.65) !important;
+  }
+}
+
+/* 5. Sleek Low-Profile Floating Glass Navigation Dock */
+nav.fixed.bottom-4.left-4.right-4 {
+  border-radius: 20px !important; /* Squircle floating dock shape */
+  background: rgba(8, 44, 27, 0.94) !important;
+  border: 1px solid rgba(195, 156, 78, 0.32) !important;
+  box-shadow: 0 16px 45px rgba(8, 44, 27, 0.35) !important;
+  height: 60px !important; /* Slightly taller for organic comfort */
+}
+
+/* Floating cart action bubble elevation */
+.fixed.bottom-20.right-5.z-40 {
+  border-radius: 50% !important;
+  background: var(--c-gold) !important;
+  box-shadow: 0 10px 30px rgba(195, 156, 78, 0.5) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.fixed.bottom-20.right-5.z-40:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+}
+
+/* 6. Typography refinements - Cormorant styling tags */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.02em !important;
+  font-weight: 500 !important;
+  text-transform: none !important; /* Keep capitalization luxurious and natural, not blocky */
+}
+
+.font-serif {
+  font-family: var(--font-serif) !important;
+}
+
+/* Hero Title Luxury Fluid Size */
+.hero-title {
+  font-family: var(--font-serif) !important;
+  font-weight: 300 !important; /* iOS thin cinematic typography */
+  letter-spacing: -0.01em !important;
+  line-height: 1.05 !important;
+}
+
+.hero-title span {
+  font-weight: 600 !important;
+  font-style: italic !important;
+}
+
+/* Smooth micro-interaction for organic tags */
+.bg-cream.text-green.border.border-gold,
+.bg-green\/10.text-green,
+.bg-gold-light.text-gold {
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  padding: 4px 12px !important;
 }
